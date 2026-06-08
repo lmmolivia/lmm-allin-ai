@@ -1,0 +1,15 @@
+{
+  "pre_tool_use": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python3 -c 'import json,re,sys; p=json.load(sys.stdin); raw=json.dumps(p.get(\"tool_input\",{}),ensure_ascii=False); pats=[r\"\\brm\\s+-rf\\s+(/|~|\\.|\\*)\",r\"\\bgit\\s+reset\\s+--hard\\b\",r\"\\bgit\\s+clean\\s+-fdx\\b\",r\"\\bchmod\\s+-R\\s+777\\b\",r\"\\bsudo\\b\"]; hit=next((x for x in pats if re.search(x,raw)),None); print(json.dumps({\"decision\":\"block\",\"reason\":\"Blocked by local Codex hook: command matches a destructive pattern.\"}) if hit else \"{}\")'",
+          "async": false,
+          "timeout": 5,
+          "statusMessage": "Checking command safety"
+        }
+      ]
+    }
+  ]
+}
