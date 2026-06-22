@@ -63,3 +63,18 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+## 5. Algorithm Analysis Documents
+
+When the user asks for an algorithm explanation or analysis:
+- Generate a detailed Markdown document for the algorithm.
+- Put the document under the `doc/` directory.
+- Prefer Chinese explanations for documents under `doc/`, while keeping code symbols,
+  parameter names, and standard algorithm names in their original form when useful.
+- Keep the explanation tied to this repository's code when relevant.
+- Knowledge and algorithm documents must be rigorous and source-grounded.
+- Prefer primary sources such as papers, official documentation, and official repositories.
+- Clearly separate verified facts from engineering interpretation or reasonable inference.
+- Do not invent paper details, metrics, formulas, company practices, or implementation
+  claims. If a point is uncertain or unsupported, say so explicitly.
+- For niche, recent, or research-heavy topics, verify sources before writing the document.

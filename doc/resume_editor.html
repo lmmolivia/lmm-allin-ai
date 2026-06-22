@@ -1,0 +1,1302 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>可视化简历编辑器</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #5f6d7a;
+      --line: #d8e0e7;
+      --paper: #f4f7fb;
+      --white: #ffffff;
+      --blue: #2357a6;
+      --teal: #0f766e;
+      --gold: #b7791f;
+      --red: #b94a48;
+      --field: #f9fbfd;
+      --shadow: 0 16px 42px rgba(31, 45, 61, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+      letter-spacing: 0;
+      line-height: 1.55;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 22px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #2357a6, #0f766e);
+      box-shadow: 0 8px 24px rgba(31, 45, 61, 0.14);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      min-height: 36px;
+      padding: 7px 13px;
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      border-radius: 6px;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.13);
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      border-color: #ffffff;
+      color: var(--blue);
+      background: #ffffff;
+      font-weight: 750;
+    }
+
+    .btn.secondary {
+      color: var(--ink);
+      border-color: var(--line);
+      background: #ffffff;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(360px, 430px) 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .editor {
+      max-height: calc(100vh - 96px);
+      overflow: auto;
+      padding: 18px;
+    }
+
+    .preview-panel {
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfe;
+    }
+
+    .preview-head strong {
+      font-size: 15px;
+    }
+
+    .preview-frame {
+      display: block;
+      width: 100%;
+      min-height: calc(100vh - 152px);
+      border: 0;
+      background: #ffffff;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    details + details {
+      margin-top: 12px;
+    }
+
+    summary {
+      padding: 13px 14px;
+      cursor: pointer;
+      color: var(--ink);
+      font-weight: 760;
+      list-style-position: inside;
+    }
+
+    .section-body {
+      display: grid;
+      gap: 12px;
+      padding: 0 14px 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+      background: var(--field);
+      outline: none;
+    }
+
+    input {
+      min-height: 38px;
+      padding: 8px 10px;
+    }
+
+    textarea {
+      min-height: 86px;
+      padding: 9px 10px;
+      resize: vertical;
+    }
+
+    textarea.tall {
+      min-height: 150px;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(35, 87, 166, 0.12);
+      background: #ffffff;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .status {
+      min-height: 20px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 13px;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .editor {
+        max-height: none;
+      }
+
+      .preview-frame {
+        min-height: 720px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+
+      .layout {
+        padding: 12px;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>可视化简历编辑器</h1>
+        <div class="status" id="status">草稿未修改</div>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button" id="saveDraft">保存草稿</button>
+        <button class="btn" type="button" id="loadDraft">读取草稿</button>
+        <button class="btn" type="button" id="resetDraft">恢复初稿</button>
+        <button class="btn primary" type="button" id="exportHtml">导出 HTML</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel editor" aria-label="简历编辑区">
+        <details open>
+          <summary>个人信息</summary>
+          <div class="section-body">
+            <div class="grid-2">
+              <div class="field">
+                <label for="name">姓名</label>
+                <input id="name" data-field="name">
+              </div>
+              <div class="field">
+                <label for="role">求职方向</label>
+                <input id="role" data-field="role">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label for="phone">电话</label>
+                <input id="phone" data-field="phone">
+              </div>
+              <div class="field">
+                <label for="email">邮箱</label>
+                <input id="email" data-field="email">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label for="city">城市</label>
+                <input id="city" data-field="city">
+              </div>
+              <div class="field">
+                <label for="availability">到岗</label>
+                <input id="availability" data-field="availability">
+              </div>
+            </div>
+            <div class="field">
+              <label for="photoUrl">照片路径</label>
+              <input id="photoUrl" data-field="photoUrl">
+            </div>
+            <div class="field">
+              <label for="summary">个人定位</label>
+              <textarea id="summary" data-field="summary"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>核心亮点</summary>
+          <div class="section-body">
+            <div class="grid-2">
+              <div class="field">
+                <label for="metric1Value">亮点 1 数值</label>
+                <input id="metric1Value" data-field="metric1Value">
+              </div>
+              <div class="field">
+                <label for="metric1Label">亮点 1 说明</label>
+                <input id="metric1Label" data-field="metric1Label">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label for="metric2Value">亮点 2 数值</label>
+                <input id="metric2Value" data-field="metric2Value">
+              </div>
+              <div class="field">
+                <label for="metric2Label">亮点 2 说明</label>
+                <input id="metric2Label" data-field="metric2Label">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label for="metric3Value">亮点 3 数值</label>
+                <input id="metric3Value" data-field="metric3Value">
+              </div>
+              <div class="field">
+                <label for="metric3Label">亮点 3 说明</label>
+                <input id="metric3Label" data-field="metric3Label">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label for="metric4Value">亮点 4 数值</label>
+                <input id="metric4Value" data-field="metric4Value">
+              </div>
+              <div class="field">
+                <label for="metric4Label">亮点 4 说明</label>
+                <input id="metric4Label" data-field="metric4Label">
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>教育与技术栈</summary>
+          <div class="section-body">
+            <div class="field">
+              <label for="education">教育经历，每行一段</label>
+              <textarea id="education" data-field="education"></textarea>
+            </div>
+            <div class="field">
+              <label for="chainSkills">推荐链路标签</label>
+              <textarea id="chainSkills" data-field="chainSkills"></textarea>
+            </div>
+            <div class="field">
+              <label for="recallSkills">召回与兴趣建模标签</label>
+              <textarea id="recallSkills" data-field="recallSkills"></textarea>
+            </div>
+            <div class="field">
+              <label for="rankSkills">排序与融合标签</label>
+              <textarea id="rankSkills" data-field="rankSkills"></textarea>
+            </div>
+            <div class="field">
+              <label for="optimizationSkills">目标优化标签</label>
+              <textarea id="optimizationSkills" data-field="optimizationSkills"></textarea>
+            </div>
+            <div class="field">
+              <label for="keywords">求职关键词</label>
+              <textarea id="keywords" data-field="keywords"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <details open>
+          <summary>美团：视频推荐</summary>
+          <div class="section-body">
+            <div class="grid-2">
+              <div class="field">
+                <label for="meituanTitle">公司与岗位</label>
+                <input id="meituanTitle" data-field="meituanTitle">
+              </div>
+              <div class="field">
+                <label for="meituanDate">时间</label>
+                <input id="meituanDate" data-field="meituanDate">
+              </div>
+            </div>
+            <div class="field">
+              <label for="meituanMeta">经历标签</label>
+              <input id="meituanMeta" data-field="meituanMeta">
+            </div>
+            <div class="field">
+              <label for="videoProjectTitle">项目标题</label>
+              <input id="videoProjectTitle" data-field="videoProjectTitle">
+            </div>
+            <div class="field">
+              <label for="videoProjectSummary">项目概述</label>
+              <textarea id="videoProjectSummary" data-field="videoProjectSummary"></textarea>
+            </div>
+            <div class="field">
+              <label for="videoProjectBullets">项目要点，每行一条</label>
+              <textarea id="videoProjectBullets" class="tall" data-field="videoProjectBullets"></textarea>
+            </div>
+            <div class="field">
+              <label for="videoProjectResults">结果指标，逗号或换行分隔</label>
+              <textarea id="videoProjectResults" data-field="videoProjectResults"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>美团：直播推荐</summary>
+          <div class="section-body">
+            <div class="field">
+              <label for="liveProjectTitle">项目标题</label>
+              <input id="liveProjectTitle" data-field="liveProjectTitle">
+            </div>
+            <div class="field">
+              <label for="liveProjectSummary">项目概述</label>
+              <textarea id="liveProjectSummary" data-field="liveProjectSummary"></textarea>
+            </div>
+            <div class="field">
+              <label for="liveProjectBullets">项目要点，每行一条</label>
+              <textarea id="liveProjectBullets" class="tall" data-field="liveProjectBullets"></textarea>
+            </div>
+            <div class="field">
+              <label for="liveProjectResults">结果指标，逗号或换行分隔</label>
+              <textarea id="liveProjectResults" data-field="liveProjectResults"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>滴滴经历</summary>
+          <div class="section-body">
+            <div class="grid-2">
+              <div class="field">
+                <label for="didiTitle">公司与岗位</label>
+                <input id="didiTitle" data-field="didiTitle">
+              </div>
+              <div class="field">
+                <label for="didiDate">时间</label>
+                <input id="didiDate" data-field="didiDate">
+              </div>
+            </div>
+            <div class="field">
+              <label for="didiMeta">经历标签</label>
+              <input id="didiMeta" data-field="didiMeta">
+            </div>
+            <div class="field">
+              <label for="didiProjectTitle">项目标题</label>
+              <input id="didiProjectTitle" data-field="didiProjectTitle">
+            </div>
+            <div class="field">
+              <label for="didiProjectSummary">项目概述</label>
+              <textarea id="didiProjectSummary" data-field="didiProjectSummary"></textarea>
+            </div>
+            <div class="field">
+              <label for="didiProjectBullets">项目要点，每行一条</label>
+              <textarea id="didiProjectBullets" class="tall" data-field="didiProjectBullets"></textarea>
+            </div>
+            <div class="field">
+              <label for="didiProjectResults">结果指标，逗号或换行分隔</label>
+              <textarea id="didiProjectResults" data-field="didiProjectResults"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>个人优势</summary>
+          <div class="section-body">
+            <div class="field">
+              <label for="strengths">个人优势，每行一条</label>
+              <textarea id="strengths" class="tall" data-field="strengths"></textarea>
+            </div>
+            <div class="field">
+              <label for="footerNote">页脚备注</label>
+              <input id="footerNote" data-field="footerNote">
+            </div>
+            <div class="small-note">导出的 HTML 可以用浏览器打开，再通过打印保存成 PDF。</div>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel preview-panel" aria-label="简历预览区">
+        <div class="preview-head">
+          <strong>实时预览</strong>
+          <button class="btn secondary" type="button" id="printResume">打印 / 另存 PDF</button>
+        </div>
+        <iframe class="preview-frame" id="preview" title="简历实时预览"></iframe>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "lmm-recommendation-resume-draft-v1";
+
+    const defaultState = {
+      name: "XXX",
+      role: "推荐算法工程师 / 推荐算法专家",
+      phone: "XXX",
+      email: "XXX",
+      city: "XXX",
+      availability: "可沟通",
+      photoUrl: "assets/profile-photo.jpg",
+      summary: "8 年推荐算法相关经验，长期深耕出行推荐、内容推荐、视频推荐与直播推荐。具备从召回、粗排、精排到重排的全链路推荐系统建设经验，曾在滴滴和美团多次从 0 到 1 搭建线上推荐系统，并推动核心业务指标显著提升。",
+      metric1Value: "8 年",
+      metric1Label: "推荐算法与大规模线上系统经验",
+      metric2Value: "3 次",
+      metric2Label: "从 0 到 1 搭建核心推荐链路",
+      metric3Value: "全链路",
+      metric3Label: "召回 / 粗排 / 精排 / 重排完整覆盖",
+      metric4Value: "生成式",
+      metric4Label: "OneRec 思路借鉴与线上落地探索",
+      education: "浙江大学｜软件工程｜硕士｜2016 - 2018\n武汉大学｜计算机科学与技术｜本科｜2012 - 2016",
+      chainSkills: "召回, 粗排, 精排, 重排, 流式更新, 端上重排",
+      recallSkills: "Tag 召回, CF, U2I, MIND, UMA, STAMP, 双塔",
+      rankSkills: "DIN, SIM, PPNet, EPNet, CGC, POSO, RankMixer",
+      optimizationSkills: "Weighted LR, D2Q, CRead, 多目标建模, 场景融合",
+      keywords: "推荐算法, 内容推荐, 视频推荐, 直播推荐, LBS 推荐, 多目标排序, 生成式推荐",
+      meituanTitle: "美团｜推荐算法工程师",
+      meituanMeta: "点评事业部视频推荐 / 美团 App 直播推荐",
+      meituanDate: "2022 - 2026",
+      videoProjectTitle: "点评事业部视频推荐全链路建设",
+      videoProjectSummary: "从 0 到 1 搭建点评视频推荐系统，覆盖召回、粗排、精排、重排完整链路，支撑视频内容分发效率和用户消费体验提升。",
+      videoProjectBullets: "召回侧建设 Tag 召回、CF 召回、U2I 召回等多路召回策略，并落地 MIND、UMA、STAMP、双塔等模型，提升用户兴趣建模能力。\n粗排与精排侧引入 DIN、SIM、PPNet、EPNet、CGC 等结构，围绕链路一致性、候选筛选效率和排序表达能力持续迭代。\n围绕点击、时长、互动等目标进行多目标建模，使用 Weighted LR、D2Q、CRead 等方法优化时长收益，模型采用流式更新。\n重排侧落地端上重排、多样性打散、精排公式序融合、头部提权与尾部打压等策略，改善推荐结果结构与用户体验。",
+      videoProjectResults: "CTR +XX%, 播放时长 +XX%, 人均消费 +XX%",
+      liveProjectTitle: "美团 App 直播推荐",
+      liveProjectSummary: "负责美团 App 直播推荐算法迭代，围绕用户分层、场景融合、排序融合和生成式推荐进行探索与线上落地。",
+      liveProjectBullets: "针对新老用户差异，引入 POSO 等个性化建模方法，提升不同生命周期用户的推荐匹配效率。\n推动多场景融合建模，增强模型对不同流量场景、用户意图和内容供给的统一表达能力。\n落地 RankMixer 等排序融合方法，提升多目标排序效果和推荐稳定性。\n借鉴 OneRec 思路探索生成式推荐，并完成线上落地，为直播推荐引入新的候选生成与排序优化方向。",
+      liveProjectResults: "点击 +XX%, 观看时长 +XX%, 转化 +XX%",
+      didiTitle: "滴滴｜算法工程师",
+      didiMeta: "国际化业务上下车点推荐 / 命名推荐",
+      didiDate: "2018 - 2022",
+      didiProjectTitle: "国际化上下车点推荐与命名推荐系统",
+      didiProjectSummary: "负责国际化业务出行场景推荐，采用召回-精排范式从 0 到 1 建设上下车点推荐和命名推荐系统。",
+      didiProjectBullets: "构建候选点召回、排序建模和线上服务链路，结合用户行为、地理位置、历史订单、POI 信息与实时上下文优化推荐准确率。\n建设命名推荐系统，提升 POI 与上下车点信息表达质量，增强用户选点效率和可理解性。\n通过算法优化降低司乘会面难度，改善司乘体验，并减少定位、选点和会面问题带来的客诉。",
+      didiProjectResults: "推荐点击率 +XX%, 会面成功率 +XX%, 客诉率 -XX%",
+      strengths: "具备推荐系统全链路经验，能独立完成从业务问题拆解、算法方案设计、模型上线到指标复盘的闭环。\n熟悉内容、直播、LBS 出行等不同推荐场景，能够在用户兴趣、场景意图、内容供给和业务目标之间做工程化权衡。\n有多次从 0 到 1 建设经验，也有成熟链路上的模型迭代、流式更新、多目标优化和生成式推荐探索经验。\n工程落地能力较强，8 年工作经历中获得 5 次高绩效评价，责任心强，善于跨团队沟通协作并推动复杂项目稳定交付。",
+      footerNote: "注：XX% 为待补充量化指标，建议投递前替换为真实线上收益。"
+    };
+
+    const resumeCss = String.raw`
+      :root {
+        --ink: #17202a;
+        --muted: #5f6d7a;
+        --line: #d8e0e7;
+        --paper: #f6f8fb;
+        --white: #ffffff;
+        --blue: #2357a6;
+        --teal: #0f766e;
+        --gold: #b7791f;
+        --red: #b94a48;
+        --chip: #eef5ff;
+        --shadow: 0 18px 45px rgba(31, 45, 61, 0.10);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+        letter-spacing: 0;
+        line-height: 1.62;
+      }
+
+      .page {
+        width: min(1180px, calc(100% - 32px));
+        margin: 28px auto;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 190px;
+        gap: 28px;
+        align-items: start;
+        padding: 34px 40px 30px;
+        color: #ffffff;
+        background:
+          linear-gradient(135deg, rgba(35, 87, 166, 0.96), rgba(15, 118, 110, 0.92)),
+          linear-gradient(90deg, #2357a6, #0f766e);
+      }
+
+      .name-row {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(34px, 4vw, 52px);
+        line-height: 1.05;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .role {
+        padding: 5px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 999px;
+        font-size: 15px;
+        white-space: nowrap;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .hero-summary {
+        max-width: 780px;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 16px;
+      }
+
+      .hero-side {
+        display: grid;
+        gap: 12px;
+        justify-items: end;
+        align-content: start;
+      }
+
+      .profile-photo {
+        width: 126px;
+        height: 158px;
+        object-fit: cover;
+        object-position: center top;
+        border: 2px solid rgba(255, 255, 255, 0.88);
+        border-radius: 6px;
+        background: #ffffff;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+      }
+
+      .contact {
+        display: grid;
+        gap: 8px;
+        align-content: start;
+        justify-items: end;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.92);
+      }
+
+      .contact span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        white-space: nowrap;
+      }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        padding: 18px 40px;
+        border-bottom: 1px solid var(--line);
+        background: #fbfcfe;
+      }
+
+      .metric {
+        min-height: 82px;
+        padding: 14px 16px;
+        border-left: 4px solid var(--blue);
+        border-radius: 6px;
+        background: #ffffff;
+      }
+
+      .metric:nth-child(2) { border-color: var(--teal); }
+      .metric:nth-child(3) { border-color: var(--gold); }
+      .metric:nth-child(4) { border-color: var(--red); }
+
+      .metric strong {
+        display: block;
+        font-size: 22px;
+        line-height: 1.1;
+      }
+
+      .metric span {
+        display: block;
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 28px;
+        padding: 34px 40px 42px;
+      }
+
+      .sidebar,
+      .main {
+        display: grid;
+        gap: 24px;
+        align-content: start;
+      }
+
+      .section { min-width: 0; }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 14px;
+        font-size: 18px;
+        line-height: 1.25;
+        font-weight: 750;
+      }
+
+      .section-title::before {
+        content: "";
+        width: 8px;
+        height: 22px;
+        border-radius: 999px;
+        background: var(--blue);
+      }
+
+      .sidebar .section-title::before { background: var(--teal); }
+
+      .side-box {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .edu-item + .edu-item {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+      }
+
+      .edu-item strong,
+      .job-head strong {
+        display: block;
+        font-size: 16px;
+        line-height: 1.35;
+      }
+
+      .edu-item span,
+      .job-meta {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 4px 9px;
+        border-radius: 999px;
+        color: #174170;
+        background: var(--chip);
+        border: 1px solid #d8e9ff;
+        font-size: 13px;
+        line-height: 1.25;
+      }
+
+      .chip.teal {
+        color: #0f5e58;
+        background: #eaf8f6;
+        border-color: #caebe6;
+      }
+
+      .chip.gold {
+        color: #76510f;
+        background: #fff7e8;
+        border-color: #f5dfb8;
+      }
+
+      .skill-group + .skill-group { margin-top: 16px; }
+
+      .skill-group h3 {
+        margin: 0 0 9px;
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .chain {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 6px;
+      }
+
+      .chain-step {
+        position: relative;
+        min-height: 94px;
+        padding: 14px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfe;
+      }
+
+      .chain-step::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 0;
+        width: 6px;
+        height: 2px;
+        background: var(--line);
+      }
+
+      .chain-step:last-child::after { display: none; }
+
+      .chain-step strong {
+        display: block;
+        color: var(--blue);
+        font-size: 15px;
+        line-height: 1.3;
+      }
+
+      .chain-step span {
+        display: block;
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .job {
+        position: relative;
+        padding-left: 24px;
+        border-left: 2px solid var(--line);
+      }
+
+      .job + .job { margin-top: 28px; }
+
+      .job::before {
+        content: "";
+        position: absolute;
+        left: -7px;
+        top: 5px;
+        width: 12px;
+        height: 12px;
+        border: 2px solid var(--blue);
+        border-radius: 50%;
+        background: #ffffff;
+      }
+
+      .job-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .job-meta {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .project {
+        padding: 18px 18px 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .project + .project { margin-top: 14px; }
+
+      .project h3 {
+        margin: 0 0 10px;
+        font-size: 17px;
+        line-height: 1.35;
+      }
+
+      .project p {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 19px;
+      }
+
+      li {
+        margin: 6px 0;
+        padding-left: 2px;
+      }
+
+      .result-line {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed var(--line);
+      }
+
+      .result {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 3px 9px;
+        border-radius: 999px;
+        color: #0f5e58;
+        background: #eaf8f6;
+        font-size: 13px;
+      }
+
+      .footer-note {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 900px) {
+        .hero,
+        .content {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-side,
+        .contact { justify-items: start; }
+        .metric-row { grid-template-columns: repeat(2, 1fr); }
+        .chain { grid-template-columns: 1fr; }
+
+        .chain-step::after {
+          top: auto;
+          right: auto;
+          left: 22px;
+          bottom: 0;
+          width: 2px;
+          height: 8px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .page {
+          width: 100%;
+          margin: 0;
+          border-radius: 0;
+          border-left: 0;
+          border-right: 0;
+        }
+
+        .hero,
+        .metric-row,
+        .content {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+
+        .metric-row { grid-template-columns: 1fr; }
+        .job-head { display: block; }
+
+        .job-meta {
+          margin-top: 4px;
+          text-align: left;
+        }
+      }
+
+      @media print {
+        body { background: #ffffff; }
+
+        .page {
+          width: 100%;
+          margin: 0;
+          border: 0;
+          border-radius: 0;
+          box-shadow: none;
+        }
+
+        .hero {
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+
+        .project,
+        .side-box,
+        .metric,
+        .chain-step {
+          break-inside: avoid;
+        }
+      }
+    `;
+
+    const fields = [...document.querySelectorAll("[data-field]")];
+    const preview = document.getElementById("preview");
+    const status = document.getElementById("status");
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function lines(value) {
+      return String(value || "")
+        .split(/\n+/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function tokens(value) {
+      return String(value || "")
+        .split(/[\n,，、]+/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function currentState() {
+      const data = {};
+      fields.forEach((field) => {
+        data[field.dataset.field] = field.value;
+      });
+      return data;
+    }
+
+    function fillForm(data) {
+      fields.forEach((field) => {
+        field.value = data[field.dataset.field] || "";
+      });
+      render();
+    }
+
+    function renderChips(value, className = "") {
+      return tokens(value)
+        .map((item) => `<span class="chip ${className}">${escapeHtml(item)}</span>`)
+        .join("");
+    }
+
+    function renderEducation(value) {
+      return lines(value)
+        .map((item) => {
+          const parts = item.split("｜");
+          const school = parts.shift() || item;
+          const detail = parts.join("｜");
+          return `<div class="edu-item"><strong>${escapeHtml(school)}</strong><span>${escapeHtml(detail)}</span></div>`;
+        })
+        .join("");
+    }
+
+    function renderBullets(value) {
+      const items = lines(value);
+      if (!items.length) return "";
+      return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+    }
+
+    function renderResults(value) {
+      const items = tokens(value);
+      if (!items.length) return "";
+      return `<div class="result-line">${items.map((item) => `<span class="result">${escapeHtml(item)}</span>`).join("")}</div>`;
+    }
+
+    function renderProfilePhoto(value) {
+      const photoUrl = String(value || defaultState.photoUrl || "").trim();
+      if (!photoUrl) return "";
+      return `<img class="profile-photo" src="${escapeHtml(photoUrl)}" alt="证件照" onerror="this.style.display='none'">`;
+    }
+
+    function renderProject(title, summary, bullets, results) {
+      return `
+        <div class="project">
+          <h3>${escapeHtml(title)}</h3>
+          <p>${escapeHtml(summary)}</p>
+          ${renderBullets(bullets)}
+          ${renderResults(results)}
+        </div>
+      `;
+    }
+
+    function buildResumeBody(data) {
+      return `
+        <article class="page">
+          <header class="hero">
+            <div>
+              <div class="name-row">
+                <h1>${escapeHtml(data.name)}</h1>
+                <span class="role">${escapeHtml(data.role)}</span>
+              </div>
+              <p class="hero-summary">${escapeHtml(data.summary)}</p>
+            </div>
+            <div class="hero-side">
+              ${renderProfilePhoto(data.photoUrl)}
+              <div class="contact" aria-label="联系方式">
+                <span>电话：${escapeHtml(data.phone)}</span>
+                <span>邮箱：${escapeHtml(data.email)}</span>
+                <span>城市：${escapeHtml(data.city)}</span>
+                <span>到岗：${escapeHtml(data.availability)}</span>
+              </div>
+            </div>
+          </header>
+
+          <section class="metric-row" aria-label="核心亮点">
+            <div class="metric"><strong>${escapeHtml(data.metric1Value)}</strong><span>${escapeHtml(data.metric1Label)}</span></div>
+            <div class="metric"><strong>${escapeHtml(data.metric2Value)}</strong><span>${escapeHtml(data.metric2Label)}</span></div>
+            <div class="metric"><strong>${escapeHtml(data.metric3Value)}</strong><span>${escapeHtml(data.metric3Label)}</span></div>
+            <div class="metric"><strong>${escapeHtml(data.metric4Value)}</strong><span>${escapeHtml(data.metric4Label)}</span></div>
+          </section>
+
+          <main class="content">
+            <aside class="sidebar">
+              <section class="section side-box">
+                <h2 class="section-title">教育经历</h2>
+                ${renderEducation(data.education)}
+              </section>
+
+              <section class="section side-box">
+                <h2 class="section-title">技术栈</h2>
+                <div class="skill-group">
+                  <h3>推荐链路</h3>
+                  <div class="chips">${renderChips(data.chainSkills)}</div>
+                </div>
+                <div class="skill-group">
+                  <h3>召回与兴趣建模</h3>
+                  <div class="chips">${renderChips(data.recallSkills, "teal")}</div>
+                </div>
+                <div class="skill-group">
+                  <h3>排序与融合</h3>
+                  <div class="chips">${renderChips(data.rankSkills, "gold")}</div>
+                </div>
+                <div class="skill-group">
+                  <h3>目标优化</h3>
+                  <div class="chips">${renderChips(data.optimizationSkills)}</div>
+                </div>
+              </section>
+
+              <section class="section side-box">
+                <h2 class="section-title">求职关键词</h2>
+                <div class="chips">${renderChips(data.keywords)}</div>
+              </section>
+            </aside>
+
+            <section class="main">
+              <section class="section">
+                <h2 class="section-title">推荐系统全链路能力</h2>
+                <div class="chain" aria-label="推荐系统全链路">
+                  <div class="chain-step"><strong>召回</strong><span>${escapeHtml(tokens(data.recallSkills).slice(0, 7).join(" / "))}</span></div>
+                  <div class="chain-step"><strong>粗排</strong><span>与精排结构协同，提升候选筛选效率和链路一致性</span></div>
+                  <div class="chain-step"><strong>精排</strong><span>${escapeHtml(tokens(data.rankSkills).slice(0, 5).join(" / "))}，多目标与时长优化</span></div>
+                  <div class="chain-step"><strong>重排</strong><span>多样性打散、公式序融合、头部提权、尾部打压</span></div>
+                  <div class="chain-step"><strong>业务结果</strong><span>提升点击、时长、消费深度、转化与用户体验</span></div>
+                </div>
+              </section>
+
+              <section class="section">
+                <h2 class="section-title">工作经历</h2>
+                <article class="job">
+                  <div class="job-head">
+                    <div>
+                      <strong>${escapeHtml(data.meituanTitle)}</strong>
+                      <span class="job-meta">${escapeHtml(data.meituanMeta)}</span>
+                    </div>
+                    <div class="job-meta">${escapeHtml(data.meituanDate)}</div>
+                  </div>
+                  ${renderProject(data.videoProjectTitle, data.videoProjectSummary, data.videoProjectBullets, data.videoProjectResults)}
+                  ${renderProject(data.liveProjectTitle, data.liveProjectSummary, data.liveProjectBullets, data.liveProjectResults)}
+                </article>
+
+                <article class="job">
+                  <div class="job-head">
+                    <div>
+                      <strong>${escapeHtml(data.didiTitle)}</strong>
+                      <span class="job-meta">${escapeHtml(data.didiMeta)}</span>
+                    </div>
+                    <div class="job-meta">${escapeHtml(data.didiDate)}</div>
+                  </div>
+                  ${renderProject(data.didiProjectTitle, data.didiProjectSummary, data.didiProjectBullets, data.didiProjectResults)}
+                </article>
+              </section>
+
+              <section class="section">
+                <h2 class="section-title">个人优势</h2>
+                <div class="project">${renderBullets(data.strengths)}</div>
+                <p class="footer-note">${escapeHtml(data.footerNote)}</p>
+              </section>
+            </section>
+          </main>
+        </article>
+      `;
+    }
+
+    function buildResumeDocument(data) {
+      return `<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${escapeHtml(data.name)} - 推荐算法工程师简历</title>
+  <style>${resumeCss}</style>
+</head>
+<body>
+${buildResumeBody(data)}
+</body>
+</html>`;
+    }
+
+    function render() {
+      const html = buildResumeDocument(currentState());
+      preview.srcdoc = html;
+      status.textContent = "预览已更新";
+    }
+
+    function saveDraft() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentState()));
+      status.textContent = "草稿已保存";
+    }
+
+    function loadDraft() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        status.textContent = "没有找到已保存草稿";
+        return;
+      }
+      fillForm({ ...defaultState, ...JSON.parse(saved) });
+      status.textContent = "草稿已读取";
+    }
+
+    function resetDraft() {
+      fillForm(defaultState);
+      status.textContent = "已恢复初稿";
+    }
+
+    function exportHtml() {
+      const html = buildResumeDocument(currentState());
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "recommendation_resume_edited.html";
+      link.click();
+      URL.revokeObjectURL(url);
+      status.textContent = "HTML 已导出";
+    }
+
+    function printResume() {
+      const frameWindow = preview.contentWindow;
+      if (frameWindow) {
+        frameWindow.focus();
+        frameWindow.print();
+      }
+    }
+
+    fields.forEach((field) => {
+      field.addEventListener("input", render);
+    });
+
+    document.getElementById("saveDraft").addEventListener("click", saveDraft);
+    document.getElementById("loadDraft").addEventListener("click", loadDraft);
+    document.getElementById("resetDraft").addEventListener("click", resetDraft);
+    document.getElementById("exportHtml").addEventListener("click", exportHtml);
+    document.getElementById("printResume").addEventListener("click", printResume);
+
+    fillForm(defaultState);
+  </script>
+</body>
+</html>

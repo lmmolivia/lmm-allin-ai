@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>刘美琼 - 推荐算法工程师简历</title>
+  <style>
+      :root {
+        --ink: #17202a;
+        --muted: #5f6d7a;
+        --line: #d8e0e7;
+        --paper: #f6f8fb;
+        --white: #ffffff;
+        --blue: #2357a6;
+        --teal: #0f766e;
+        --gold: #b7791f;
+        --red: #b94a48;
+        --chip: #eef5ff;
+        --shadow: 0 18px 45px rgba(31, 45, 61, 0.10);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+        letter-spacing: 0;
+        line-height: 1.62;
+      }
+
+      .page {
+        width: min(1040px, calc(100% - 32px));
+        margin: 24px auto;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: 0 14px 36px rgba(31, 45, 61, 0.08);
+        overflow: hidden;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 148px;
+        gap: 24px;
+        align-items: center;
+        padding: 28px 34px 24px;
+        color: var(--ink);
+        background: #ffffff;
+        border-top: 6px solid var(--blue);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .name-row {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(34px, 4vw, 46px);
+        line-height: 1.05;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .role {
+        padding: 5px 12px;
+        border: 1px solid #cfe0f4;
+        border-radius: 999px;
+        font-size: 14px;
+        white-space: nowrap;
+        color: var(--blue);
+        background: #f0f6ff;
+      }
+
+      .hero-summary {
+        max-width: 760px;
+        margin: 0 0 16px;
+        color: #344456;
+        font-size: 15px;
+      }
+
+      .hero-side {
+        display: grid;
+        justify-items: end;
+        align-content: start;
+      }
+
+      .profile-photo {
+        width: 132px;
+        height: 165px;
+        object-fit: contain;
+        object-position: center center;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #ffffff;
+        box-shadow: 0 10px 24px rgba(31, 45, 61, 0.13);
+      }
+
+      .contact {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        font-size: 14px;
+        color: #31445a;
+      }
+
+      .contact span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 3px 9px;
+        border: 1px solid #dbe6f2;
+        border-radius: 999px;
+        background: #f7fafd;
+        white-space: nowrap;
+      }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 14px 34px 16px;
+        border-bottom: 1px solid var(--line);
+        background: #f8fafc;
+      }
+
+      .metric {
+        min-height: 70px;
+        padding: 12px 14px;
+        border-left: 4px solid var(--blue);
+        border-radius: 6px;
+        background: #ffffff;
+        box-shadow: 0 6px 16px rgba(31, 45, 61, 0.04);
+      }
+
+      .metric:nth-child(2) { border-color: var(--teal); }
+      .metric:nth-child(3) { border-color: var(--gold); }
+      .metric:nth-child(4) { border-color: var(--red); }
+
+      .metric strong {
+        display: block;
+        font-size: 20px;
+        line-height: 1.1;
+      }
+
+      .metric span {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 12.5px;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 272px 1fr;
+        gap: 26px;
+        padding: 26px 34px 34px;
+      }
+
+      .sidebar,
+      .main {
+        display: grid;
+        align-content: start;
+      }
+
+      .sidebar { gap: 18px; }
+      .main { gap: 20px; }
+
+      .section { min-width: 0; }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 12px;
+        font-size: 17px;
+        line-height: 1.25;
+        font-weight: 750;
+      }
+
+      .section-title::before {
+        content: "";
+        width: 8px;
+        height: 20px;
+        border-radius: 999px;
+        background: var(--blue);
+      }
+
+      .sidebar .section-title::before { background: var(--teal); }
+
+      .side-box {
+        padding: 15px 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfe;
+      }
+
+      .edu-item + .edu-item {
+        margin-top: 13px;
+        padding-top: 13px;
+        border-top: 1px solid var(--line);
+      }
+
+      .edu-item strong,
+      .job-head strong {
+        display: block;
+        font-size: 16px;
+        line-height: 1.35;
+      }
+
+      .edu-item span,
+      .job-meta {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        color: #174170;
+        background: var(--chip);
+        border: 1px solid #d8e9ff;
+        font-size: 12.5px;
+        line-height: 1.25;
+      }
+
+      .chip.teal {
+        color: #0f5e58;
+        background: #eaf8f6;
+        border-color: #caebe6;
+      }
+
+      .chip.gold {
+        color: #76510f;
+        background: #fff7e8;
+        border-color: #f5dfb8;
+      }
+
+      .skill-group + .skill-group { margin-top: 14px; }
+
+      .skill-group h3 {
+        margin: 0 0 9px;
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .chain {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 6px;
+      }
+
+      .chain-step {
+        position: relative;
+        min-height: 86px;
+        padding: 12px 11px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfe;
+      }
+
+      .chain-step::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 0;
+        width: 6px;
+        height: 2px;
+        background: var(--line);
+      }
+
+      .chain-step:last-child::after { display: none; }
+
+      .chain-step strong {
+        display: block;
+        color: var(--blue);
+        font-size: 15px;
+        line-height: 1.3;
+      }
+
+      .chain-step span {
+        display: block;
+        margin-top: 7px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .job {
+        position: relative;
+        padding: 0;
+        border-left: 0;
+      }
+
+      .job + .job { margin-top: 24px; }
+
+      .job::before {
+        display: none;
+      }
+
+      .job-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 12px;
+        padding: 12px 14px;
+        border: 1px solid #dbe6f2;
+        border-left: 4px solid var(--blue);
+        border-radius: 8px;
+        background: #f8fbff;
+      }
+
+      .job-meta {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .project {
+        padding: 15px 16px 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .project + .project { margin-top: 14px; }
+
+      .project h3 {
+        margin: 0 0 8px;
+        color: #163f78;
+        font-size: 17px;
+        line-height: 1.35;
+      }
+
+      .project p {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 19px;
+      }
+
+      li {
+        margin: 5px 0;
+        padding-left: 2px;
+      }
+
+      .result-line {
+        display: block;
+        gap: 8px;
+        margin-top: 11px;
+        padding-top: 11px;
+        border-top: 1px dashed var(--line);
+      }
+
+      .result {
+        display: block;
+        padding: 8px 10px;
+        border-left: 3px solid var(--teal);
+        border-radius: 6px;
+        color: #0f5e58;
+        background: #eaf8f6;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .footer-note {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .footer-note:empty { display: none; }
+
+      @media screen and (max-width: 900px) {
+        .hero,
+        .content {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-side { justify-items: start; }
+        .contact { justify-content: flex-start; }
+        .metric-row { grid-template-columns: repeat(2, 1fr); }
+        .chain { grid-template-columns: 1fr; }
+
+        .chain-step::after {
+          top: auto;
+          right: auto;
+          left: 22px;
+          bottom: 0;
+          width: 2px;
+          height: 8px;
+        }
+      }
+
+      @media screen and (max-width: 560px) {
+        .page {
+          width: 100%;
+          margin: 0;
+          border-radius: 0;
+          border-left: 0;
+          border-right: 0;
+        }
+
+        .hero,
+        .metric-row,
+        .content {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+
+        .metric-row { grid-template-columns: 1fr; }
+        .job-head { display: block; }
+
+        .job-meta {
+          margin-top: 4px;
+          text-align: left;
+        }
+      }
+
+      @media print {
+        @page {
+          size: A4;
+          margin: 5mm;
+        }
+
+        html,
+        body {
+          width: 720px;
+          min-width: 720px;
+          background: #ffffff;
+          font-size: 10px;
+          line-height: 1.28;
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+
+        .page {
+          width: 720px;
+          margin: 0;
+          border: 0;
+          border-radius: 0;
+          box-shadow: none;
+        }
+
+        .hero {
+          display: -webkit-box;
+          display: flex;
+          gap: 12px;
+          align-items: flex-start;
+          padding: 10px 12px 8px;
+          border-top-width: 3px;
+        }
+
+        .hero > div:first-child {
+          -webkit-box-flex: 1;
+          flex: 1 1 auto;
+        }
+
+        .hero-side {
+          display: block;
+          flex: 0 0 88px;
+        }
+
+        .profile-photo {
+          width: 82px;
+          height: 103px;
+          border-radius: 4px;
+          box-shadow: none;
+        }
+
+        .name-row {
+          gap: 8px;
+          margin-bottom: 4px;
+        }
+
+        h1 {
+          font-size: 27px;
+        }
+
+        .role {
+          padding: 2px 7px;
+          font-size: 10px;
+        }
+
+        .hero-summary {
+          max-width: none;
+          margin-bottom: 5px;
+          font-size: 10px;
+          line-height: 1.35;
+        }
+
+        .contact {
+          gap: 4px;
+          font-size: 9.2px;
+        }
+
+        .contact span {
+          min-height: 15px;
+          padding: 1px 5px;
+        }
+
+        .metric-row {
+          display: -webkit-box;
+          display: flex;
+          gap: 5px;
+          padding: 6px 12px;
+        }
+
+        .metric {
+          -webkit-box-flex: 1;
+          flex: 1 1 0;
+          min-height: 0;
+          padding: 5px 6px;
+          border-left-width: 3px;
+          box-shadow: none;
+        }
+
+        .metric strong {
+          font-size: 13.5px;
+        }
+
+        .metric span {
+          margin-top: 2px;
+          font-size: 8.4px;
+          line-height: 1.25;
+        }
+
+        .content {
+          display: -webkit-box;
+          display: flex;
+          gap: 9px;
+          padding: 8px 12px 9px;
+        }
+
+        .sidebar {
+          display: block;
+          flex: 0 0 158px;
+        }
+
+        .main {
+          display: block;
+          -webkit-box-flex: 1;
+          flex: 1 1 auto;
+        }
+
+        .side-box {
+          padding: 5px 6px;
+          border-radius: 5px;
+        }
+
+        .sidebar .side-box + .side-box,
+        .main .section + .section,
+        .job + .job,
+        .project + .project {
+          margin-top: 5px;
+        }
+
+        .section-title {
+          gap: 5px;
+          margin-bottom: 5px;
+          font-size: 11.5px;
+        }
+
+        .section-title::before {
+          width: 4px;
+          height: 12px;
+        }
+
+        .edu-item strong,
+        .job-head strong {
+          font-size: 10.2px;
+        }
+
+        .edu-item span,
+        .job-meta,
+        .skill-group h3 {
+          font-size: 8.3px;
+        }
+
+        .edu-item + .edu-item {
+          margin-top: 5px;
+          padding-top: 5px;
+        }
+
+        .skill-group + .skill-group {
+          margin-top: 5px;
+        }
+
+        .skill-group h3 {
+          margin-bottom: 4px;
+        }
+
+        .chips {
+          gap: 3px;
+        }
+
+        .chip {
+          min-height: 15px;
+          padding: 1px 5px;
+          font-size: 8px;
+        }
+
+        .chain {
+          display: -webkit-box;
+          display: flex;
+          gap: 4px;
+          margin-top: 0;
+        }
+
+        .chain-step {
+          -webkit-box-flex: 1;
+          flex: 1 1 0;
+          min-height: 0;
+          padding: 4px 5px;
+          border-radius: 5px;
+        }
+
+        .chain-step::after {
+          display: none;
+        }
+
+        .chain-step strong {
+          font-size: 9.2px;
+        }
+
+        .chain-step span {
+          margin-top: 2px;
+          font-size: 7.6px;
+          line-height: 1.25;
+        }
+
+        .job-head {
+          display: -webkit-box;
+          display: flex;
+          gap: 8px;
+          margin-bottom: 5px;
+          padding: 4px 6px;
+          border-left-width: 3px;
+          border-radius: 5px;
+        }
+
+        .job-head > div:first-child {
+          -webkit-box-flex: 1;
+          flex: 1 1 auto;
+        }
+
+        .project {
+          padding: 5px 6px;
+          border-radius: 5px;
+        }
+
+        .project h3 {
+          margin-bottom: 3px;
+          font-size: 11px;
+        }
+
+        .project p {
+          margin-bottom: 4px;
+          font-size: 9px;
+          line-height: 1.3;
+        }
+
+        ul {
+          padding-left: 12px;
+        }
+
+        li {
+          margin: 1px 0;
+          padding-left: 0;
+          font-size: 8.6px;
+          line-height: 1.22;
+        }
+
+        .result-line {
+          margin-top: 4px;
+          padding-top: 4px;
+        }
+
+        .result {
+          padding: 3px 5px;
+          border-radius: 4px;
+          font-size: 8.6px;
+          line-height: 1.25;
+        }
+
+        .project,
+        .side-box,
+        .metric,
+        .job-head,
+        .chain-step {
+          break-inside: avoid;
+        }
+
+        .content {
+          padding: 26px 34px 34px;
+        }
+      }
+    </style>
+</head>
+<body>
+
+        <article class="page">
+          <header class="hero">
+            <div>
+              <div class="name-row">
+                <h1>刘美琼</h1>
+                <span class="role">推荐算法工程师 / 推荐算法专家</span>
+              </div>
+              <p class="hero-summary">8 年推荐算法相关经验，长期深耕出行推荐、内容推荐、视频推荐与直播推荐。具备从召回、粗排、精排到重排的全链路推荐系统建设经验，曾在滴滴和美团多次从 0 到 1 搭建线上推荐系统，并推动核心业务指标显著提升。</p>
+              <div class="contact" aria-label="联系方式">
+                <span>电话：13080637479</span>
+                <span>邮箱：1021555682@qq.com</span>
+                <span>城市：北京</span>
+                <span>到岗：可沟通</span>
+              </div>
+            </div>
+            <div class="hero-side">
+              <img class="profile-photo" src="assets/profile-photo.jpg" alt="证件照" onerror="this.style.display='none'">
+            </div>
+          </header>
+
+          <section class="metric-row" aria-label="核心亮点">
+            <div class="metric"><strong>8 年</strong><span>推荐算法与大规模线上系统经验</span></div>
+            <div class="metric"><strong>3 次</strong><span>从 0 到 1 搭建核心推荐链路</span></div>
+            <div class="metric"><strong>全链路</strong><span>召回 / 粗排 / 精排 / 重排完整覆盖</span></div>
+            <div class="metric"><strong>生成式</strong><span>OneRec 思路借鉴与线上落地探索</span></div>
+          </section>
+
+          <main class="content">
+            <aside class="sidebar">
+              <section class="section side-box">
+                <h2 class="section-title">教育经历</h2>
+                <div class="edu-item"><strong>浙江大学</strong><span>软件工程｜硕士｜2016 - 2018</span></div><div class="edu-item"><strong>武汉大学</strong><span>计算机科学与技术｜本科｜2012 - 2016</span></div>
+              </section>
+
+              <section class="section side-box">
+                <h2 class="section-title">技术栈</h2>
+                <div class="skill-group">
+                  <h3>推荐链路</h3>
+                  <div class="chips"><span class="chip ">召回</span><span class="chip ">粗排</span><span class="chip ">精排</span><span class="chip ">重排</span><span class="chip ">生成式</span></div>
+                </div>
+                <div class="skill-group">
+                  <h3>召回与兴趣建模</h3>
+                  <div class="chips"><span class="chip teal">标签召回</span><span class="chip teal">CF</span><span class="chip teal">U2I</span><span class="chip teal">MIND</span><span class="chip teal">UMA</span><span class="chip teal">STAMP</span><span class="chip teal">双塔</span></div>
+                </div>
+                <div class="skill-group">
+                  <h3>排序与融合</h3>
+                  <div class="chips"><span class="chip gold">DIN</span><span class="chip gold">SIM</span><span class="chip gold">PEPNet</span><span class="chip gold">PLE</span><span class="chip gold">POSO</span><span class="chip gold">RankMixer</span></div>
+                </div>
+                <div class="skill-group">
+                  <h3>目标优化</h3>
+                  <div class="chips"><span class="chip ">Weighted LR</span><span class="chip ">D2Q</span><span class="chip ">Cread</span><span class="chip ">多目标建模</span><span class="chip ">场景融合</span></div>
+                </div>
+              </section>
+
+              <section class="section side-box">
+                <h2 class="section-title">求职关键词</h2>
+                <div class="chips"><span class="chip ">推荐算法</span><span class="chip ">视频推荐</span><span class="chip ">直播推荐</span><span class="chip ">LBS 推荐</span><span class="chip ">生成式推荐</span></div>
+              </section>
+            </aside>
+
+            <section class="main">
+              <section class="section">
+                <h2 class="section-title">推荐系统全链路能力</h2>
+                <div class="chain" aria-label="推荐系统全链路">
+                  <div class="chain-step"><strong>召回</strong><span>标签召回 / CF / U2I / MIND / UMA / STAMP / 双塔</span></div>
+                  <div class="chain-step"><strong>粗排</strong><span>与精排结构协同，提升候选筛选效率和链路一致性</span></div>
+                  <div class="chain-step"><strong>精排</strong><span>DIN / SIM / PEPNet / PLE / POSO，多目标与时长优化</span></div>
+                  <div class="chain-step"><strong>重排</strong><span>多样性打散、多目标排序、头部提权、尾部打压、端上重排</span></div>
+                </div>
+              </section>
+
+              <section class="section">
+                <h2 class="section-title">工作经历</h2>
+                <article class="job">
+                  <div class="job-head">
+                    <div>
+                      <strong>美团｜推荐算法工程师</strong>
+                      <span class="job-meta">点评事业部视频推荐 / 美团 App 直播推荐</span>
+                    </div>
+                    <div class="job-meta">2022 - 2026</div>
+                  </div>
+                  
+        <div class="project">
+          <h3>点评事业部视频推荐全链路建设</h3>
+          <p>从 0 到 1 搭建点评视频推荐系统，覆盖召回、粗排、精排、重排完整链路，支撑视频内容分发效率和用户消费体验提升。</p>
+          <ul><li>召回侧建设 标签召回、CF 召回、U2I 召回等多路召回策略，并落地 MIND、UMA、STAMP等模型，提升用户兴趣建模能力。</li><li>粗排与精排侧引入 DIN、SIM、PPNet、EPNet、CGC 等结构，围绕用户长短期兴趣、多目标联合建模和场景建模持续迭代。</li><li>围绕点击、时长、互动等目标进行多目标建模，使用 Weighted LR、D2Q、Cread 等方法优化时长收益，模型采用流式更新。</li><li>重排侧落地端上重排、多样性打散、精排公式序融合、头部提权与尾部打压等策略，改善推荐结果结构与用户体验。</li></ul>
+          <div class="result-line"><span class="result">承担项目负责人的两年期间人均播放时长和人均vv均实现了翻倍的增长。</span></div>
+        </div>
+      
+                  
+        <div class="project">
+          <h3>美团 App 直播推荐</h3>
+          <p>负责美团 App 直播推荐算法迭代，围绕用户分层、场景融合、排序融合和生成式推荐进行探索与线上落地。</p>
+          <ul><li>针对新老用户差异，引入 POSO 等个性化建模方法，提升不同生命周期用户的推荐匹配效率。</li><li>参考RankMixer，探索判别式推荐系统里的scalinglaw和更有效的特征交叉方式，提升精排模型的参数规模和表达能力。</li><li>借鉴 OneRec 思路探索生成式推荐，并完成线上落地，为直播推荐引入新的候选集。</li></ul>
+          
+        </div>
+      
+                </article>
+
+                <article class="job">
+                  <div class="job-head">
+                    <div>
+                      <strong>滴滴｜算法工程师</strong>
+                      <span class="job-meta">国际化业务上下车点推荐 / 命名推荐</span>
+                    </div>
+                    <div class="job-meta">2018 - 2022</div>
+                  </div>
+                  
+        <div class="project">
+          <h3>国际化上下车点推荐与命名推荐系统</h3>
+          <p>负责国际化业务出行场景推荐，采用召回-精排范式从 0 到 1 建设上下车点推荐和命名推荐系统。</p>
+          <ul><li>构建候选点召回、排序建模和线上服务链路，结合用户行为、地理位置、历史订单、POI 信息与实时上下文优化推荐准确率。</li><li>建设命名推荐系统，提升 POI 与上下车点信息表达质量，增强用户选点效率和可理解性。</li><li>通过算法优化降低司乘会面难度，改善司乘体验，并减少定位、选点和会面问题带来的客诉。</li></ul>
+          <div class="result-line"><span class="result">30m定点了提升30pp(62%-&gt;92%)</span></div>
+        </div>
+      
+                </article>
+              </section>
+
+              <section class="section">
+                <h2 class="section-title">个人优势</h2>
+                <div class="project"><ul><li>具备推荐系统全链路经验，能独立完成从业务问题拆解、算法方案设计、模型上线到指标复盘的闭环。</li><li>熟悉内容、直播、LBS 出行等多类推荐场景，对用户兴趣演化、场景意图表达、内容供给结构和业务目标权衡具备系统性理解与实践判断。</li><li>有多次从 0 到 1 建设经验，也有成熟链路上的模型迭代、流式更新、多目标优化和生成式推荐探索经验。</li><li>工程落地能力较强，8 年工作经历中获得 5 次高绩效评价，责任心强，善于跨团队沟通协作并推动复杂项目稳定交付。</li></ul></div>
+                <p class="footer-note"></p>
+              </section>
+            </section>
+          </main>
+        </article>
+      
+</body>
+</html>
