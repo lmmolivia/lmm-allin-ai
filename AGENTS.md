@@ -78,3 +78,11 @@ When the user asks for an algorithm explanation or analysis:
 - Do not invent paper details, metrics, formulas, company practices, or implementation
   claims. If a point is uncertain or unsupported, say so explicitly.
 - For niche, recent, or research-heavy topics, verify sources before writing the document.
+- Markdown tables in knowledge documents must be column-aligned for readability: pad
+  cells so each column has a consistent visible width, and avoid cramped tables.
+- Mathematical formulas in knowledge documents must use display LaTeX blocks (`$$ ... $$`)
+  instead of plaintext code blocks. Use aligned equations where helpful for readability;
+  reserve code blocks for pseudocode, commands, or literal data formats.
+- For technical questions involving papers or research systems, download the relevant
+  paper PDFs into the `reference/` directory and cite/use those local references
+  when writing the corresponding document.
